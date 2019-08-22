@@ -93,6 +93,10 @@ if [ "${SLACK_URL}" != "" ]; then
   curl -X POST --data "payload={\"channel\":\"${SLACK_CHANNEL}\",\"attachments\":[{\"fallback\":\"${MESSAGE}\",\"title\":\":warning: Spot Termination${CLUSTER_INFO}\",\"color\":\"${color}\",\"fields\":[{\"title\":\"Node\",\"value\":\"${NODE_NAME}\",\"short\":false},{\"title\":\"Instance\",\"value\":\"${INSTANCE_ID}\",\"short\":true},{\"title\":\"Instance Type\",\"value\":\"${INSTANCE_TYPE}\",\"short\":true},{\"title\":\"Availability Zone\",\"value\":\"${AZ}\",\"short\":true}]}]}" "${SLACK_URL}"
 fi
 
+if [ "${ALERTMANAGER_URL}" != "" ]; then
+  curl -X POST --data "[{\"labels\": {\"alertname\": \"Spot Termination\",\"Node\": \"${NODE_NAME}\",\"Instance\": \"${INSTANCE_ID}\",\"severity\": \"spot_termination_slack\",\"InstanceType\": \"${INSTANCE_TYPE}\",\"AvailabilityZone\": \"${AZ}\"},\"annotations\": {\"description\": \"Spot Termination\",\"channel\": \"${SLACK_CHANNEL}\"}}]" "${ALERTMANAGER_URL}/api/v1/alerts"
+fi
+
 # Notify Email address with a Google account
 # Provide: Gsuite email account and Password
 #
